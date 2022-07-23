@@ -1,0 +1,27 @@
+{
+  "name": "slector",
+  "version": "0.0.1",
+  "description": "This can be used to select html & css targets and save as a config for use in crawling projects. This is not a crawler.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "copyfiles": "copyfiles --up 1 src/ext/*.json src/ext/popup/*.html src/ext/popup/*.css src/ext/img/*.png lib",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint .eslintrc"
+  },
+  "type": "module",
+  "author": "Thomas Blake",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^15.2.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "copyfiles": "^2.4.1",
+    "eslint": "^8.18.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
+  }
+}
