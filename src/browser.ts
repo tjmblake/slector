@@ -11,6 +11,9 @@ export default class BrowserInstance {
   browser: puppeteer.Browser | undefined;
   options: options;
 
+  /** The 'Extensions' page that is opened on load. */
+  extPage: puppeteer.Page | undefined;
+
   constructor(options: options) {
     this.options = options;
     this.init();
@@ -21,6 +24,8 @@ export default class BrowserInstance {
     this.browser = await this.createBrowser();
     // Enables extension. Opens Dev Console if required.
     await this.setupDevBrowser();
+
+    await this.storeCollectionSchema();
   }
 
   async createBrowser(): Promise<puppeteer.Browser> {
@@ -30,7 +35,7 @@ export default class BrowserInstance {
 
     console.log('Opening the browser...');
 
-    const browser: puppeteer.Browser = await puppeteer.launch({
+    const browser = await puppeteer.launch({
       headless: false,
       devtools: true,
       args: ['--disable-setuid-sandbox', `--load-extension=${extPath}`, `--disable-extensions-except=${extPath}`],
@@ -46,25 +51,39 @@ export default class BrowserInstance {
       return;
     }
 
-    const extPage: puppeteer.Page = await this.browser.newPage();
-    await extPage.goto('chrome://extensions', { waitUntil: 'load' });
-    await extPage.waitForTimeout(4000);
+    this.extPage = await this.browser.newPage();
+    await this.extPage.goto('chrome://extensions', { waitUntil: 'load' });
+    await this.extPage.waitForTimeout(3000);
 
     // Turn on Dev Mode
     const devBtn = (
-      await extPage.evaluateHandle(
+      await this.extPage.evaluateHandle(
         'document.querySelector("body > extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#devMode")',
       )
     ).asElement();
 
-    if (devBtn) devBtn.click();
+    if (devBtn) await devBtn.click();
+    await this.extPage.waitForTimeout(2000);
 
     // Open Dev Console
     if (this.options.showExtConsole) {
-      const workerBtn = await extPage.waitForSelector('pierce/a.clippable-flex-text', {
+      const workerBtn = await this.extPage.waitForSelector('pierce/a.clippable-flex-text', {
         visible: true,
       });
       if (workerBtn) await workerBtn.click();
+      await this.extPage.waitForTimeout(1000);
     }
+  }
+
+  /** Stores data in localStorage
+   * Note: localStorage is not accessible via chrome.storage.local.get
+   * We send a content script from the extension into the page to access localStorage and then store that in chrome.storage.local.set
+   */
+  async storeCollectionSchema() {
+    await this.extPage?.goto('https://www.google.com', { waitUntil: 'load' });
+
+    await this.extPage?.evaluate((data) => {
+      localStorage.setItem('collectionSchema', JSON.stringify(data));
+    }, this.options.collectionSchema);
   }
 }

@@ -3,6 +3,7 @@ import BrowserInstance from './browser.js';
 export interface options {
   /** Should the Chrome Console open for the extension? */
   showExtConsole?: boolean;
+  collectionSchema: string[];
 }
 
 export default class Slector {
