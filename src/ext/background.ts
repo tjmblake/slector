@@ -1,8 +1,8 @@
 class Background {
-  collectionSchema: string[] | undefined;
+  state: State;
 
   constructor() {
-    console.log('Constructing Background...');
+    this.state = {};
     this.initMessageHandler();
   }
 
@@ -10,18 +10,26 @@ class Background {
     console.log('Initialising Message Handler...');
 
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      console.log(message);
       this.handleRequest(message).then(sendResponse);
       return true;
     });
   }
 
-  async handleRequest(message: { head: string; message: string }) {
-    if (message.head === 'init') {
-      console.log('Initialising...');
+  async handleRequest(request: { head: string; body: string }) {
+    if (request.head === 'init') {
       const res = await this.getLocalStorage();
-      return { head: 'init', message: res };
+      if (res?.body) {
+        this.state.collectionSchema = res.body;
+        return { head: 'init', data: 'Stored Collection Schema!' };
+      }
+      return { head: 'error', body: 'No data found to init from.' };
     }
+
+    if (request.head === 'getState') {
+      return { head: 'getState', body: this.state };
+    }
+
+    return { head: 'error', body: 'Request not handled' };
   }
 
   async getLocalStorage() {
@@ -33,10 +41,10 @@ class Background {
         files: ['getLocalStorage.js'],
       });
 
-      const res = await chrome.tabs.sendMessage(tab.id, {
+      const res = (await chrome.tabs.sendMessage(tab.id, {
         head: 'getLocalStorage',
-      });
-      console.log(res);
+      })) as unknown as { head: string; body: string[] };
+
       return res;
     }
   }

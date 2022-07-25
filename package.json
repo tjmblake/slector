@@ -1,6 +1,6 @@
 {
   "name": "slector",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This can be used to select html & css targets and save as a config for use in crawling projects. This is not a crawler.",
   "main": "lib/index.js",
   "scripts": {
