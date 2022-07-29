@@ -25,7 +25,7 @@ export default class BrowserInstance {
     // Enables extension. Opens Dev Console if required.
     await this.setupDevBrowser();
 
-    await this.storeCollectionSchema();
+    await this.storeCollectionTypes();
   }
 
   async createBrowser(): Promise<puppeteer.Browser> {
@@ -79,13 +79,13 @@ export default class BrowserInstance {
    * Note: localStorage is not accessible via chrome.storage.local.get
    * We send a content script from the extension into the page to access localStorage and then store that in chrome.storage.local.set
    */
-  async storeCollectionSchema() {
+  async storeCollectionTypes() {
     await this.extPage?.goto('https://www.google.com');
 
     await this.extPage?.evaluate((data) => {
-      localStorage.setItem('collectionSchema', JSON.stringify(data));
-    }, this.options.collectionSchema);
+      localStorage.setItem('collectionTypes', JSON.stringify(data));
+    }, this.options.collectionTypes);
 
-    console.log('storeCollectionSchema: Stored!');
+    console.log('storeCollectionTypes: Stored!');
   }
 }

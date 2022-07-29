@@ -28,10 +28,7 @@ class Popup {
       });
     });
 
-    this.DOM.pickType.addEventListener(
-      'change',
-      this.changePickType.bind(this)
-    );
+    this.DOM.pickType.addEventListener('change', this.changePickType.bind(this));
   }
 
   init(res) {
@@ -86,7 +83,7 @@ class Popup {
         console.log('RES');
         console.log(this);
         this.DOM.table.innerHTML = res.payload;
-      }.bind(this)
+      }.bind(this),
     );
   }
 
@@ -96,7 +93,7 @@ class Popup {
         heading: 'DeleteQuery',
         payload: Number(e.target.parentElement.dataset.queryIndex),
       },
-      this.init.bind(this)
+      this.init.bind(this),
     );
   }
 
@@ -108,7 +105,7 @@ class Popup {
       },
       (res) => {
         this.init(res);
-      }
+      },
     );
   }
 
