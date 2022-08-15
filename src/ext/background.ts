@@ -1,11 +1,12 @@
 class Background {
   state: State;
+  selectionKey = 0;
 
   constructor() {
     this.state = {
       slectors: [],
-      collectionTypes: [],
-      activeCollection: 0,
+      selectionTypes: [],
+      selectionType: '',
     };
     this.initMessageHandler();
   }
@@ -23,8 +24,8 @@ class Background {
     if (request.head === 'init') {
       const res = await this.getLocalStorage();
       if (res?.body) {
-        this.state.collectionTypes = res.body;
-        this.state.activeCollection = 0;
+        this.state.selectionTypes = res.body;
+        this.state.selectionType = this.state.selectionTypes[0];
 
         return { head: 'init', data: 'Stored Collection Schema!' };
       }
@@ -39,18 +40,27 @@ class Background {
 
     // Message from CS with selection data to store
     if (request.head === 'newSelection') {
-      console.log(request.body);
-
-      if (typeof request.body === 'object')
-        this.state.slectors.push({ collection: this.state.activeCollection, data: request.body });
+      if (typeof request.body === 'object') {
+        this.state.slectors.push({
+          selectionKey: this.selectionKey,
+          selectionType: this.state.selectionType,
+          data: request.body,
+        });
+        this.selectionKey = this.selectionKey++;
+      }
 
       return { head: 'newSelection', body: this.state };
     }
 
+    if (request.head === 'deleteSelector') {
+      this.state.slectors = this.state.slectors.filter((slector) => slector.selectionKey != Number(request.body));
+      return { head: 'deletedSelector', body: this.state };
+    }
+
     // Message from Popup to set current selection type from dropdown.
-    if (request.head === 'setCollectionType') {
-      this.state.activeCollection = this.state.collectionTypes.findIndex((el) => el === request.body);
-      return { head: 'setCollectionType', body: this.state };
+    if (request.head === 'setSelectionType' && typeof request.body === 'string') {
+      this.state.selectionType = request.body;
+      return { head: 'setSelectionType', body: this.state };
     }
 
     if (request.head === 'getState') {

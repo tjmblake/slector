@@ -12,10 +12,9 @@ export default class Slector {
   constructor(options: options) {
     console.log('New Slector');
     this.options = options;
-    this.init();
   }
 
-  async init(): Promise<void> {
-    await new BrowserInstance(this.options);
+  async slect(): Promise<void> {
+    new BrowserInstance(this.options);
   }
 }

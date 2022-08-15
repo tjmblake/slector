@@ -1,37 +1,32 @@
 class Popup {
   state: State;
-  initBtn: HTMLButtonElement | null;
-  collectionTypeMenu: HTMLElement | null;
+  selectionTypeMenu: HTMLElement | null;
   selectBtn: HTMLButtonElement | null;
   slectorsMenu: HTMLButtonElement | null;
 
   constructor() {
     this.state = {
       slectors: [],
-      collectionTypes: [],
-      activeCollection: 0,
+      selectionTypes: [],
+      selectionType: '',
     };
 
-    this.initBtn = document.querySelector('#init');
-    this.collectionTypeMenu = document.querySelector('#selector-dropdown');
+    this.selectionTypeMenu = document.querySelector('#selector-dropdown');
     this.selectBtn = document.querySelector('#select');
 
     this.slectorsMenu = document.querySelector('#slectorsMenu');
-    this.setInitListener();
-    this.setSelectListener();
-    this.setCollectionTypeMenuListener();
-  }
 
-  setInitListener() {
-    this.initBtn?.addEventListener('click', this.sendInitMessage.bind(this));
+    this.setSelectListener();
+    this.setselectionTypeMenuListener();
+    this.sendInitMessage();
   }
 
   setSelectListener() {
     this.selectBtn?.addEventListener('click', this.sendSelectMessage.bind(this));
   }
 
-  setCollectionTypeMenuListener() {
-    this.collectionTypeMenu?.addEventListener('change', this.sendCollectionTypeMessage.bind(this));
+  setselectionTypeMenuListener() {
+    this.selectionTypeMenu?.addEventListener('change', this.sendSelectionTypeMessage.bind(this));
   }
 
   async sendInitMessage() {
@@ -39,7 +34,6 @@ class Popup {
     console.log('Init Response Recieved:');
     console.log(res);
 
-    // Begin UI Refresh with Data
     this.refresh();
   }
 
@@ -49,17 +43,25 @@ class Popup {
     console.log(res);
   }
 
-  async sendCollectionTypeMessage(e: Event) {
+  async sendSelectionTypeMessage(e: Event) {
     const value = (e.target as HTMLInputElement).value;
-    const res = await chrome.runtime.sendMessage({ head: 'setCollectionType', body: value });
-    console.log('Collection Type Updated');
-    console.log(res);
+    const res = await chrome.runtime.sendMessage({ head: 'setSelectionType', body: value });
+
+    this.refresh();
+  }
+
+  async sendDeleteSelectorMessage(e: Event) {
+    const target = e.target as HTMLElement;
+
+    const selectionKey = target.parentElement?.dataset.selectionKey;
+
+    const res = await chrome.runtime.sendMessage({ head: 'deleteSelector', body: selectionKey });
+
+    this.refresh();
   }
 
   async getState() {
     const res = await chrome.runtime.sendMessage({ head: 'getState' });
-    console.log('Got State:');
-    console.log(res.body);
     this.state = res.body;
     return;
   }
@@ -67,15 +69,18 @@ class Popup {
   /** get the current state and refreshes the Popup UI */
   async refresh() {
     await this.getState();
-    this.populateCollectionTypeMenu();
+    this.populateselectionTypeMenu();
 
     this.listSelectorQueries();
   }
 
-  populateCollectionTypeMenu() {
-    if (this.collectionTypeMenu && this.state.collectionTypes)
-      this.collectionTypeMenu.innerHTML = this.state.collectionTypes
-        .map((el) => `<option value="${el}">${el}</option>`)
+  populateselectionTypeMenu() {
+    if (this.selectionTypeMenu && this.state.selectionTypes)
+      this.selectionTypeMenu.innerHTML = this.state.selectionTypes
+        .map(
+          (el) =>
+            `<option value="${el}" ${this.state.selectionType === el ? 'selected="selected"' : ''}>${el}</option>`,
+        )
         .join('');
   }
 
@@ -84,12 +89,22 @@ class Popup {
    */
   listSelectorQueries() {
     const slectorsMenuMarkup = this.state.slectors
-      .filter((slector) => slector.collection === this.state.activeCollection)
+      .filter((slector) => slector.selectionType === this.state.selectionType)
       .map((slector, i) => {
-        return `<div class='' data-query-index='${i}'>${slector.data[0].localName}<button class='editQuery'>Edit</button><button class='deleteQuery'>Delete</button></div>`;
+        return `<div class='' data-selection-key='${slector.selectionKey}'>${slector.data[0].localName}<button class='editSelector'>Edit</button><button class='deleteSelector'>Delete</button></div>`;
       });
 
-    this.slectorsMenu?.insertAdjacentHTML('beforeend', slectorsMenuMarkup.join(''));
+    if (this.slectorsMenu) this.slectorsMenu.innerHTML = slectorsMenuMarkup.join('');
+
+    this.addSelectorQueryListeners();
+  }
+
+  addSelectorQueryListeners() {
+    const deleteBtns = document.querySelectorAll('.deleteSelector') as unknown as HTMLButtonElement[];
+
+    deleteBtns.forEach((btn) => {
+      btn.addEventListener('click', this.sendDeleteSelectorMessage.bind(this));
+    });
   }
 }
 

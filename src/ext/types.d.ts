@@ -1,11 +1,12 @@
 declare interface Slector {
   data: pathData[];
-  collection: number;
+  selectionType: string;
+  selectionKey: number;
 }
 
 declare interface State {
-  collectionTypes: string[];
-  activeCollection: number;
+  selectionTypes: string[];
+  selectionType: string;
   slectors: Slector[];
 }
 
