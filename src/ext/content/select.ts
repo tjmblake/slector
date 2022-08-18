@@ -22,16 +22,27 @@ function init() {
       const assembledSelection = await Promise.all(
         paths
           .filter((el) => el.localName)
-          .map(async (el) => {
-            const data: pathData = {};
-            if (el.localName) data.localName = el.localName;
-            if (el.id) data.id = el.id;
-            if (el.className)
-              data.classes = el.className
-                .split(' ')
-                .map((el: string) => el.trim())
-                .filter((el: string) => el !== '');
+          .map(async (el, i) => {
+            const data: pathLayer = { content: [], layer: i };
 
+            let key = 0;
+
+            if (el.localName) {
+              data.content.push({ type: 'localName', value: el.localName, key: key, active: true });
+              key++;
+            }
+
+            if (el.id) {
+              data.content.push({ type: 'id', value: el.id, key: key, active: true });
+              key++;
+            }
+
+            if (el.className) {
+              el.className.split(' ').forEach((str) => {
+                data.content.push({ type: 'class', value: str, key: key, active: true });
+                key++;
+              });
+            }
             return data;
           }),
       );
@@ -40,7 +51,7 @@ function init() {
       this.sendSelection(assembledSelection);
     }
 
-    async sendSelection(assembledSelection: pathData[]) {
+    async sendSelection(assembledSelection: pathLayer[]) {
       const res = await chrome.runtime.sendMessage({ head: 'newSelection', body: assembledSelection });
       console.log(res);
       document.removeEventListener('click', this.boundSelect);

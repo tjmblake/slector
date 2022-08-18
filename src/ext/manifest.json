@@ -3,6 +3,7 @@
   "description": "Configurable Slector Extension",
   "version": "1.0",
   "manifest_version": 3,
+  "type": "module",
   "background": {
     "service_worker": "background.js"
   },

@@ -57,6 +57,19 @@ class Background {
       return { head: 'deletedSelector', body: this.state };
     }
 
+    if (request.head === 'editSelector') {
+      // Find Correct Value
+      const [slector, layer, key] = request.body as number[];
+
+      this.state.slectors[slector].data[layer].content[key].active = this.state.slectors[slector].data[layer].content[
+        key
+      ].active
+        ? false
+        : true;
+
+      return { head: 'editedSelector', body: this.state };
+    }
+
     // Message from Popup to set current selection type from dropdown.
     if (request.head === 'setSelectionType' && typeof request.body === 'string') {
       this.state.selectionType = request.body;

@@ -1,5 +1,5 @@
 declare interface Slector {
-  data: pathData[];
+  data: pathLayer[];
   selectionType: string;
   selectionKey: number;
 }
@@ -10,9 +10,15 @@ declare interface State {
   slectors: Slector[];
 }
 
+declare interface pathLayer {
+  content: pathData[];
+  layer: number;
+}
+
 declare interface pathData {
-  localName?: string;
-  id?: string;
-  className?: string;
-  classes?: string[];
+  type: 'localName' | 'id' | 'class';
+  value: string;
+  key: number;
+  /** How we toggle the data when using the edit menu. */
+  active: boolean;
 }

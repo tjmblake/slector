@@ -1,8 +1,13 @@
+import * as message from './_messages.js';
+import * as markup from './_markup.js';
+
 class Popup {
   state: State;
+  activeKey: number | null;
   selectionTypeMenu: HTMLElement | null;
   selectBtn: HTMLButtonElement | null;
   slectorsMenu: HTMLButtonElement | null;
+  editMenu: HTMLElement | null;
 
   constructor() {
     this.state = {
@@ -11,100 +16,112 @@ class Popup {
       selectionType: '',
     };
 
+    this.activeKey = null;
+
     this.selectionTypeMenu = document.querySelector('#selector-dropdown');
     this.selectBtn = document.querySelector('#select');
 
     this.slectorsMenu = document.querySelector('#slectorsMenu');
 
+    this.editMenu = document.querySelector('#prune');
     this.setSelectListener();
-    this.setselectionTypeMenuListener();
-    this.sendInitMessage();
+    this.setSelectionTypeMenuListener();
+    this.init();
   }
 
   setSelectListener() {
-    this.selectBtn?.addEventListener('click', this.sendSelectMessage.bind(this));
+    this.selectBtn?.addEventListener('click', message.sendSelectMessage);
   }
 
-  setselectionTypeMenuListener() {
-    this.selectionTypeMenu?.addEventListener('change', this.sendSelectionTypeMessage.bind(this));
+  setSelectionTypeMenuListener() {
+    this.selectionTypeMenu?.addEventListener('change', this.changeSelectionTypeHandler.bind(this));
   }
 
-  async sendInitMessage() {
-    const res = await chrome.runtime.sendMessage({ head: 'init' });
-    console.log('Init Response Recieved:');
-    console.log(res);
-
+  async init() {
+    await message.sendInitMessage();
     this.refresh();
   }
 
-  async sendSelectMessage() {
-    const res = await chrome.runtime.sendMessage({ head: 'select' });
-    console.log('Select Script Launched');
-    console.log(res);
-  }
-
-  async sendSelectionTypeMessage(e: Event) {
+  async changeSelectionTypeHandler(e: Event) {
     const value = (e.target as HTMLInputElement).value;
-    const res = await chrome.runtime.sendMessage({ head: 'setSelectionType', body: value });
-
+    await message.sendSelectionTypeMessage(value);
+    this.activeKey = null;
     this.refresh();
   }
 
-  async sendDeleteSelectorMessage(e: Event) {
+  async deleteBtnHandler(e: Event) {
     const target = e.target as HTMLElement;
-
     const selectionKey = target.parentElement?.dataset.selectionKey;
-
-    const res = await chrome.runtime.sendMessage({ head: 'deleteSelector', body: selectionKey });
-
+    if (selectionKey) await message.sendDeleteSelectorMessage(selectionKey);
     this.refresh();
   }
 
   async getState() {
     const res = await chrome.runtime.sendMessage({ head: 'getState' });
     this.state = res.body;
-    return;
   }
 
-  /** get the current state and refreshes the Popup UI */
+  /** Get the current state and refreshes the Popup UI */
   async refresh() {
     await this.getState();
-    this.populateselectionTypeMenu();
 
-    this.listSelectorQueries();
-  }
-
-  populateselectionTypeMenu() {
+    // Render Selection Type Menu
     if (this.selectionTypeMenu && this.state.selectionTypes)
-      this.selectionTypeMenu.innerHTML = this.state.selectionTypes
-        .map(
-          (el) =>
-            `<option value="${el}" ${this.state.selectionType === el ? 'selected="selected"' : ''}>${el}</option>`,
-        )
-        .join('');
+      this.selectionTypeMenu.innerHTML = markup.selectionTypes(this.state.selectionTypes, this.state.selectionType);
+
+    // Render Selections List of Active Selection Type
+    if (this.slectorsMenu)
+      this.slectorsMenu.innerHTML = markup.listSelectors(this.state.slectors, this.state.selectionType);
+
+    this.addSelectorListeners();
+
+    this.renderEditMenu();
+    this.addEditListeners();
   }
 
-  /** Used to show queries for each selector.
-   * Each query has 1 menu, containing an edit and delete btn.
-   */
-  listSelectorQueries() {
-    const slectorsMenuMarkup = this.state.slectors
-      .filter((slector) => slector.selectionType === this.state.selectionType)
-      .map((slector, i) => {
-        return `<div class='' data-selection-key='${slector.selectionKey}'>${slector.data[0].localName}<button class='editSelector'>Edit</button><button class='deleteSelector'>Delete</button></div>`;
-      });
-
-    if (this.slectorsMenu) this.slectorsMenu.innerHTML = slectorsMenuMarkup.join('');
-
-    this.addSelectorQueryListeners();
-  }
-
-  addSelectorQueryListeners() {
+  addSelectorListeners() {
     const deleteBtns = document.querySelectorAll('.deleteSelector') as unknown as HTMLButtonElement[];
+    const editBtns = document.querySelectorAll('.editSelector') as unknown as HTMLButtonElement[];
 
     deleteBtns.forEach((btn) => {
-      btn.addEventListener('click', this.sendDeleteSelectorMessage.bind(this));
+      btn.addEventListener('click', this.deleteBtnHandler.bind(this));
     });
+
+    editBtns.forEach((btn) => {
+      btn.addEventListener('click', this.setActiveKey.bind(this));
+    });
+  }
+
+  setActiveKey(e: Event) {
+    const target = e.target as HTMLElement;
+    const key = target.parentElement?.dataset.selectionKey;
+    this.activeKey = Number(key);
+    this.refresh();
+  }
+
+  renderEditMenu() {
+    const activeEdit = this.state.slectors.find((el) => el.selectionKey === this.activeKey);
+
+    if (!this.editMenu) return;
+
+    if (activeEdit) this.editMenu.innerHTML = markup.editTableMarkup(activeEdit);
+    else this.editMenu.innerHTML = '';
+  }
+
+  addEditListeners() {
+    const tdata = document.querySelectorAll('td') as unknown as HTMLElement[];
+    console.log(tdata);
+
+    tdata.forEach((el) => el.addEventListener('click', this.handleEditClick.bind(this)));
+  }
+
+  async handleEditClick(e: Event) {
+    const target = e.target as HTMLElement;
+    const key = target.dataset.key;
+    const layer = target.dataset.layer;
+    // Send signal flipping 'active'
+    await chrome.runtime.sendMessage({ head: 'editSelector', body: [this.activeKey, layer, key] });
+    this.refresh();
   }
 }
 
