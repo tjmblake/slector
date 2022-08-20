@@ -11,9 +11,11 @@ export const sendInitMessage = async () => {
 };
 
 export const sendSelectionTypeMessage = async (value: string) => {
-  const res = await chrome.runtime.sendMessage({ head: 'setSelectionType', body: value });
+  console.log(value);
+  const res = await chrome.runtime.sendMessage({ head: 'setSlectorType', body: value });
+  console.log(res);
 };
 
 export const sendDeleteSelectorMessage = async (selectionKey: string) => {
-  const res = await chrome.runtime.sendMessage({ head: 'deleteSelector', body: selectionKey });
+  await chrome.runtime.sendMessage({ head: 'deleteSelector', body: selectionKey });
 };

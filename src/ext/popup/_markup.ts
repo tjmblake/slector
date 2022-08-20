@@ -19,10 +19,10 @@ export const selectionTypes = (selectionTypes: string[], selectionType: string) 
  */
 export const listSelectors = (slectors: Slector[], selectionType: string) => {
   const markup = slectors
-    .filter((slector) => slector.selectionType === selectionType)
+    .filter((slector) => slector.type === selectionType)
     .map((slector) => {
       const value = slector.data[0].content.find((el) => el.type === 'localName')?.value;
-      return `<div class='' data-selection-key='${slector.selectionKey}'>${value}<button class='editSelector'>Edit</button><button class='deleteSelector'>Delete</button></div>`;
+      return `<div class='' data-selection-key='${slector.key}'>${value}<button class='editSelector'>Edit</button><button class='deleteSelector'>Delete</button></div>`;
     })
     .join('');
   return markup;

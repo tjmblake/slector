@@ -1,12 +1,14 @@
 declare interface Slector {
   data: pathLayer[];
-  selectionType: string;
-  selectionKey: number;
+  type: string;
+  /** Each Slector has a unique key. */
+  key: number;
 }
 
 declare interface State {
-  selectionTypes: string[];
-  selectionType: string;
+  slectorTypes: string[];
+  /** The active slector type for Displaying in Popup & Selecting. */
+  slectorType: string;
   slectors: Slector[];
 }
 

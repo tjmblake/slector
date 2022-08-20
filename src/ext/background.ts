@@ -1,12 +1,14 @@
+import * as Injector from './_injector.js';
+
 class Background {
   state: State;
-  selectionKey = 0;
+  activeSlectorKey = 0;
 
   constructor() {
     this.state = {
       slectors: [],
-      selectionTypes: [],
-      selectionType: '',
+      slectorTypes: [],
+      slectorType: '',
     };
     this.initMessageHandler();
   }
@@ -22,10 +24,10 @@ class Background {
 
   async handleRequest(request: { head: string; body: string | [] }) {
     if (request.head === 'init') {
-      const res = await this.getLocalStorage();
+      const res = await Injector.getLocalStorage();
       if (res?.body) {
-        this.state.selectionTypes = res.body;
-        this.state.selectionType = this.state.selectionTypes[0];
+        this.state.slectorTypes = res.body;
+        this.state.slectorType = this.state.slectorTypes[0];
 
         return { head: 'init', data: 'Stored Collection Schema!' };
       }
@@ -34,7 +36,7 @@ class Background {
 
     // Req from popup to inject select script
     if (request.head === 'select') {
-      this.injectSelectScript();
+      await Injector.injectSelectScript();
       return { head: 'select', data: 'Injected!' };
     }
 
@@ -42,18 +44,18 @@ class Background {
     if (request.head === 'newSelection') {
       if (typeof request.body === 'object') {
         this.state.slectors.push({
-          selectionKey: this.selectionKey,
-          selectionType: this.state.selectionType,
+          key: this.activeSlectorKey,
+          type: this.state.slectorType,
           data: request.body,
         });
-        this.selectionKey = this.selectionKey++;
+        this.activeSlectorKey = this.activeSlectorKey++;
       }
 
       return { head: 'newSelection', body: this.state };
     }
 
     if (request.head === 'deleteSelector') {
-      this.state.slectors = this.state.slectors.filter((slector) => slector.selectionKey != Number(request.body));
+      this.state.slectors = this.state.slectors.filter((slector) => slector.key != Number(request.body));
       return { head: 'deletedSelector', body: this.state };
     }
 
@@ -71,9 +73,9 @@ class Background {
     }
 
     // Message from Popup to set current selection type from dropdown.
-    if (request.head === 'setSelectionType' && typeof request.body === 'string') {
-      this.state.selectionType = request.body;
-      return { head: 'setSelectionType', body: this.state };
+    if (request.head === 'setSlectorType' && typeof request.body === 'string') {
+      this.state.slectorType = request.body;
+      return { head: 'setSlectorType', body: this.state };
     }
 
     if (request.head === 'getState') {
@@ -81,34 +83,6 @@ class Background {
     }
 
     return { head: 'error', body: 'Request not handled' };
-  }
-
-  async getLocalStorage() {
-    const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
-
-    if (tab && typeof tab.id === 'number') {
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['./content/getLocalStorage.js'],
-      });
-
-      const res = (await chrome.tabs.sendMessage(tab.id, {
-        head: 'getLocalStorage',
-      })) as unknown as { head: string; body: string[] };
-
-      return res;
-    }
-  }
-
-  async injectSelectScript() {
-    const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
-
-    if (tab && typeof tab.id === 'number') {
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['./content/select.js'],
-      });
-    }
   }
 }
 

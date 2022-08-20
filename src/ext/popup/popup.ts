@@ -1,5 +1,5 @@
-import * as message from './_messages.js';
-import * as markup from './_markup.js';
+import * as Message from './_messages.js';
+import * as Markup from './_markup.js';
 
 class Popup {
   state: State;
@@ -12,8 +12,8 @@ class Popup {
   constructor() {
     this.state = {
       slectors: [],
-      selectionTypes: [],
-      selectionType: '',
+      slectorTypes: [],
+      slectorType: '',
     };
 
     this.activeKey = null;
@@ -30,7 +30,7 @@ class Popup {
   }
 
   setSelectListener() {
-    this.selectBtn?.addEventListener('click', message.sendSelectMessage);
+    this.selectBtn?.addEventListener('click', Message.sendSelectMessage);
   }
 
   setSelectionTypeMenuListener() {
@@ -38,13 +38,13 @@ class Popup {
   }
 
   async init() {
-    await message.sendInitMessage();
+    await Message.sendInitMessage();
     this.refresh();
   }
 
   async changeSelectionTypeHandler(e: Event) {
     const value = (e.target as HTMLInputElement).value;
-    await message.sendSelectionTypeMessage(value);
+    await Message.sendSelectionTypeMessage(value);
     this.activeKey = null;
     this.refresh();
   }
@@ -52,7 +52,7 @@ class Popup {
   async deleteBtnHandler(e: Event) {
     const target = e.target as HTMLElement;
     const selectionKey = target.parentElement?.dataset.selectionKey;
-    if (selectionKey) await message.sendDeleteSelectorMessage(selectionKey);
+    if (selectionKey) await Message.sendDeleteSelectorMessage(selectionKey);
     this.refresh();
   }
 
@@ -64,14 +64,14 @@ class Popup {
   /** Get the current state and refreshes the Popup UI */
   async refresh() {
     await this.getState();
-
+    console.log(this.state);
     // Render Selection Type Menu
-    if (this.selectionTypeMenu && this.state.selectionTypes)
-      this.selectionTypeMenu.innerHTML = markup.selectionTypes(this.state.selectionTypes, this.state.selectionType);
+    if (this.selectionTypeMenu && this.state.slectorTypes)
+      this.selectionTypeMenu.innerHTML = Markup.selectionTypes(this.state.slectorTypes, this.state.slectorType);
 
     // Render Selections List of Active Selection Type
     if (this.slectorsMenu)
-      this.slectorsMenu.innerHTML = markup.listSelectors(this.state.slectors, this.state.selectionType);
+      this.slectorsMenu.innerHTML = Markup.listSelectors(this.state.slectors, this.state.slectorType);
 
     this.addSelectorListeners();
 
@@ -100,17 +100,16 @@ class Popup {
   }
 
   renderEditMenu() {
-    const activeEdit = this.state.slectors.find((el) => el.selectionKey === this.activeKey);
+    const activeEdit = this.state.slectors.find((el) => el.key === this.activeKey);
 
     if (!this.editMenu) return;
 
-    if (activeEdit) this.editMenu.innerHTML = markup.editTableMarkup(activeEdit);
+    if (activeEdit) this.editMenu.innerHTML = Markup.editTableMarkup(activeEdit);
     else this.editMenu.innerHTML = '';
   }
 
   addEditListeners() {
     const tdata = document.querySelectorAll('td') as unknown as HTMLElement[];
-    console.log(tdata);
 
     tdata.forEach((el) => el.addEventListener('click', this.handleEditClick.bind(this)));
   }
