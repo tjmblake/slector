@@ -39,6 +39,8 @@ export default class BrowserInstance {
     const browser = await puppeteer.launch({
       headless: false,
       devtools: true,
+      defaultViewport: null,
+
       args: ['--disable-setuid-sandbox', `--load-extension=${extPath}`, `--disable-extensions-except=${extPath}`],
       ignoreHTTPSErrors: true,
     });
