@@ -95,10 +95,7 @@ export default class BrowserInstance {
 
     while (!data) {
       const storage = await this.extPage?.evaluate(() => Object.assign({}, window.localStorage));
-      console.log(storage?.done);
-
       if (storage?.done) data = storage.done;
-
       await wait(1);
     }
 

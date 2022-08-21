@@ -1,14 +1,13 @@
 {
   "name": "slector",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "This can be used to select html & css targets and save as a config for use in crawling projects. This is not a crawler.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm-run-all copyfiles build:tsc",
+    "build:tsc": "tsc",
     "watch": "tsc --watch",
-    "copyfiles": "copyfiles --up 1 src/ext/*.json src/ext/popup/*.html src/ext/popup/*.css src/ext/img/*.png lib",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint .eslintrc"
+    "copyfiles": "copyfiles --up 1 src/ext/*.json src/ext/popup/*.html src/ext/popup/*.css src/ext/img/*.png lib"
   },
   "type": "module",
   "author": "Thomas Blake",
@@ -16,12 +15,17 @@
   "dependencies": {
     "puppeteer": "^15.2.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tjmblake/slector"
+  },
   "devDependencies": {
     "@types/chrome": "^0.0.193",
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
     "copyfiles": "^2.4.1",
     "eslint": "^8.18.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4"
   }
