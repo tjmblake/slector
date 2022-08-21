@@ -4,6 +4,8 @@ export interface options {
   /** Should the Chrome Console open for the extension? */
   showExtConsole?: boolean;
   collectionTypes: string[];
+  /**The URL the browser will open. */
+  startUrl: string;
 }
 
 export default class Slector {

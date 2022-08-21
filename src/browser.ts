@@ -81,7 +81,7 @@ export default class BrowserInstance {
    * We send a content script from the extension into the page to access localStorage and then store that in chrome.storage.local.set
    */
   async storeCollectionTypes() {
-    await this.extPage?.goto('https://www.google.com');
+    await this.extPage?.goto(this.options.startUrl);
 
     await this.extPage?.evaluate((data) => {
       localStorage.setItem('collectionTypes', JSON.stringify(data));
