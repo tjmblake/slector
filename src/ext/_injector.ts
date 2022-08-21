@@ -9,13 +9,19 @@ export const injectSelectScript = async () => {
   }
 };
 
-export const injectQueryScript = async () => {
+export const injectHighlightScript = async (state: State) => {
   const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
 
   if (tab && typeof tab.id === 'number') {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      files: ['./content/select.js'],
+      files: ['./content/highlight.js'],
+    });
+
+    // Follow on the data
+    await chrome.tabs.sendMessage(tab.id, {
+      head: 'highlight',
+      body: state,
     });
   }
 };

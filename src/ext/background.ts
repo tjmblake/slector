@@ -1,4 +1,5 @@
 import * as Injector from './_injector.js';
+import * as Query from './_query.js';
 
 class Background {
   state: State;
@@ -43,31 +44,44 @@ class Background {
     // Message from CS with selection data to store
     if (request.head === 'newSelection') {
       if (typeof request.body === 'object') {
-        this.state.slectors.push({
+        const slector = {
           key: this.activeSlectorKey,
           type: this.state.slectorType,
           data: request.body,
-        });
-        this.activeSlectorKey = this.activeSlectorKey++;
+          query: '',
+        };
+        this.activeSlectorKey = this.activeSlectorKey + 1;
+
+        slector.query = Query.createQuery(slector);
+        this.state.slectors.push(slector);
       }
+
+      await Injector.injectHighlightScript(this.state);
 
       return { head: 'newSelection', body: this.state };
     }
 
     if (request.head === 'deleteSelector') {
       this.state.slectors = this.state.slectors.filter((slector) => slector.key != Number(request.body));
+      await Injector.injectHighlightScript(this.state);
+
       return { head: 'deletedSelector', body: this.state };
     }
 
     if (request.head === 'editSelector') {
       // Find Correct Value
-      const [slector, layer, key] = request.body as number[];
+      const [slectorKey, layer, key] = request.body as number[];
 
-      this.state.slectors[slector].data[layer].content[key].active = this.state.slectors[slector].data[layer].content[
-        key
-      ].active
+      const slectorIndex = this.state.slectors.findIndex((el) => el.key === slectorKey);
+
+      this.state.slectors[slectorIndex].data[layer].content[key].active = this.state.slectors[slectorIndex].data[layer]
+        .content[key].active
         ? false
         : true;
+
+      this.state.slectors[slectorIndex].query = Query.createQuery(this.state.slectors[slectorIndex]);
+
+      await Injector.injectHighlightScript(this.state);
 
       return { head: 'editedSelector', body: this.state };
     }

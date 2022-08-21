@@ -3,6 +3,7 @@ import * as Markup from './_markup.js';
 
 class Popup {
   state: State;
+  /** Key of Slector curently being edited. */
   activeKey: number | null;
   selectionTypeMenu: HTMLElement | null;
   selectBtn: HTMLButtonElement | null;
