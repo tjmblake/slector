@@ -25,13 +25,15 @@ class Background {
 
   async handleRequest(request: { head: string; body: string | [] }) {
     if (request.head === 'init') {
-      const res = await Injector.getLocalStorage();
-      if (res?.body) {
-        this.state.slectorTypes = res.body;
-        this.state.slectorType = this.state.slectorTypes[0];
+      if (this.state.slectorTypes.length === 0) {
+        const res = await Injector.getLocalStorage();
 
-        return { head: 'init', data: 'Stored Collection Schema!' };
+        if (res?.body) {
+          this.state.slectorTypes = res.body;
+          this.state.slectorType = this.state.slectorTypes[0];
+        }
       }
+      return { head: 'init', data: 'Init' };
     }
 
     if (request.head === 'done') {
