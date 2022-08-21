@@ -14,7 +14,9 @@ export default class Slector {
     this.options = options;
   }
 
-  async slect(): Promise<void> {
-    new BrowserInstance(this.options);
+  async slect(): Promise<object> {
+    const data = await new BrowserInstance(this.options).collectData();
+
+    return data;
   }
 }

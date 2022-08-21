@@ -25,7 +25,7 @@ function handleMessage(message: { head: string; body: State }) {
   // Clear all styling
   previouslySelected.forEach((el) => el.classList.remove('slector', ...classNames));
   // Find new elements in query.
-  message.body.slectors.forEach((slector, i) => {
+  message.body.slectors.forEach((slector) => {
     // Select Slector
     const slected = document.querySelectorAll(slector.query);
     // Apply Classes

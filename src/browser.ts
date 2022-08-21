@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 import path from 'path';
 import fs from 'fs';
 import url from 'url';
+import { wait } from './tools.js';
 
 import { options } from './index';
 
@@ -87,5 +88,22 @@ export default class BrowserInstance {
     }, this.options.collectionTypes);
 
     console.log('storeCollectionTypes: Stored!');
+  }
+
+  async collectData() {
+    let data: string | undefined;
+
+    while (!data) {
+      const storage = await this.extPage?.evaluate(() => Object.assign({}, window.localStorage));
+      console.log(storage?.done);
+
+      if (storage?.done) data = storage.done;
+
+      await wait(1);
+    }
+
+    this.extPage?.close();
+    this.browser?.close();
+    return JSON.parse(data);
   }
 }

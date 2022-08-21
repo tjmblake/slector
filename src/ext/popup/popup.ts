@@ -9,6 +9,7 @@ class Popup {
   selectBtn: HTMLButtonElement | null;
   slectorsMenu: HTMLButtonElement | null;
   editMenu: HTMLElement | null;
+  doneBtn: HTMLButtonElement | null;
 
   constructor() {
     this.state = {
@@ -21,21 +22,17 @@ class Popup {
 
     this.selectionTypeMenu = document.querySelector('#selector-dropdown');
     this.selectBtn = document.querySelector('#select');
-
+    this.doneBtn = document.querySelector('#done');
     this.slectorsMenu = document.querySelector('#slectorsMenu');
 
     this.editMenu = document.querySelector('#prune');
-    this.setSelectListener();
-    this.setSelectionTypeMenuListener();
-    this.init();
-  }
 
-  setSelectListener() {
+    // Adding Listeners
     this.selectBtn?.addEventListener('click', Message.sendSelectMessage);
-  }
-
-  setSelectionTypeMenuListener() {
     this.selectionTypeMenu?.addEventListener('change', this.changeSelectionTypeHandler.bind(this));
+    this.doneBtn?.addEventListener('click', Message.sendDoneMessage);
+
+    this.init();
   }
 
   async init() {

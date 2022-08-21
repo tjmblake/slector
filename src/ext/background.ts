@@ -32,7 +32,10 @@ class Background {
 
         return { head: 'init', data: 'Stored Collection Schema!' };
       }
-      return { head: 'error', body: 'No data found to init from.' };
+    }
+
+    if (request.head === 'done') {
+      await Injector.setLocalStorage(this.state);
     }
 
     // Req from popup to inject select script

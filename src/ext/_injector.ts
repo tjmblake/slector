@@ -42,3 +42,21 @@ export const getLocalStorage = async () => {
     return res;
   }
 };
+
+export const setLocalStorage = async (state: State) => {
+  const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
+
+  if (tab && typeof tab.id === 'number') {
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['./content/setLocalStorage.js'],
+    });
+
+    const res = (await chrome.tabs.sendMessage(tab.id, {
+      head: 'setLocalStorage',
+      body: JSON.stringify(state),
+    })) as unknown as { head: string; body: string[] };
+
+    return res;
+  }
+};

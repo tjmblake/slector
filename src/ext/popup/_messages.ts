@@ -19,3 +19,7 @@ export const sendSelectionTypeMessage = async (value: string) => {
 export const sendDeleteSelectorMessage = async (selectionKey: string) => {
   await chrome.runtime.sendMessage({ head: 'deleteSelector', body: selectionKey });
 };
+
+export const sendDoneMessage = async () => {
+  await chrome.runtime.sendMessage({ head: 'done' });
+};
