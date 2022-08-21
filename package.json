@@ -1,13 +1,14 @@
 {
   "name": "slector",
-  "version": "0.0.4",
+  "version": "0.0.0-development",
   "description": "This can be used to select html & css targets and save as a config for use in crawling projects. This is not a crawler.",
   "main": "lib/index.js",
   "scripts": {
     "build": "npm-run-all copyfiles build:tsc",
     "build:tsc": "tsc",
     "watch": "tsc --watch",
-    "copyfiles": "copyfiles --up 1 src/ext/*.json src/ext/popup/*.html src/ext/popup/*.css src/ext/img/*.png lib"
+    "copyfiles": "copyfiles --up 1 src/ext/*.json src/ext/popup/*.html src/ext/popup/*.css src/ext/img/*.png lib",
+    "semantic-release": "semantic-release --branches master"
   },
   "type": "module",
   "author": "Thomas Blake",
@@ -27,6 +28,7 @@
     "eslint": "^8.18.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "semantic-release": "^19.0.3"
   }
 }
