@@ -38,10 +38,14 @@ function init() {
             }
 
             if (el.className) {
-              el.className.split(' ').forEach((str) => {
-                data.content.push({ type: 'class', value: str, key: key, active: true });
-                key++;
-              });
+              el.className
+                .split(' ')
+                .filter((str) => str.trim() !== '')
+                .map((str) => (str.includes(':') ? str.replaceAll(':', '\\:') : str))
+                .forEach((str) => {
+                  data.content.push({ type: 'class', value: str, key: key, active: true });
+                  key++;
+                });
             }
             return data;
           }),
