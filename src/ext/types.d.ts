@@ -3,6 +3,7 @@ declare interface Slector {
   type: string;
   /** Each Slector has a unique key. */
   key: number;
+  /** Most recent query, created pre-injection refresh */
   query: string;
 }
 
@@ -15,6 +16,10 @@ declare interface State {
   slectors: Slector[];
 }
 
+/**PathLayer reflects each layer within a query.
+ *
+ * Each layer can include a local name (HTML Element), Classlist and ID.
+ */
 declare interface pathLayer {
   content: pathData[];
   layer: number;
