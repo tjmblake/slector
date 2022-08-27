@@ -4,8 +4,6 @@ import fs from 'fs';
 import url from 'url';
 import { wait } from './tools.js';
 
-import { options } from './index';
-
 const __filename = url.fileURLToPath(import.meta.url);
 
 export default class BrowserInstance {
@@ -90,6 +88,15 @@ export default class BrowserInstance {
     }, this.options.collectionTypes);
 
     console.log('storeCollectionTypes: Stored!');
+
+    // If passing in previous slectors
+    if (this.options.slectors && this.options.slectors.length > 0) {
+      await this.extPage?.evaluate((data) => {
+        localStorage.setItem('slectors', JSON.stringify(data));
+      }, this.options.slectors);
+
+      console.log('Slectors: Stored!');
+    }
   }
 
   async collectData() {
