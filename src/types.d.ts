@@ -32,3 +32,21 @@ declare interface pathData {
   /** How we toggle the data when using the edit menu. */
   active: boolean;
 }
+
+/** Options passed into Slector setup. */
+declare interface options {
+  /** Should the Chrome Console open for the extension? */
+  showExtConsole?: boolean;
+  /** Slector types */
+  collectionTypes: string[];
+  /**The URL the browser will open. */
+  startUrl: string;
+  /** Previous Slector Data */
+  slectors?: Slector[];
+}
+
+/** Message body sent from 'getLocalStorage' to 'background' */
+declare interface localStorageBody {
+  collectionTypes: string[];
+  slectors?: Slector[];
+}

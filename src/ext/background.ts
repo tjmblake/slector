@@ -29,7 +29,14 @@ class Background {
         const res = await Injector.getLocalStorage();
 
         if (res?.body) {
-          this.state.slectorTypes = res.body;
+          const body = res.body as unknown as localStorageBody;
+          this.state.slectorTypes = body.collectionTypes;
+          if (body.slectors) {
+            this.state.slectors = body.slectors;
+            await Injector.injectHighlightScript(this.state);
+            this.activeSlectorKey = this.state.slectors.length;
+          }
+
           this.state.slectorType = this.state.slectorTypes[0];
         }
       }
