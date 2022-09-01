@@ -1,0 +1,26 @@
+.cell {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+  border-radius: 0.5rem !important;
+  height: 4rem;
+  padding: 0.5rem 1rem;
+
+  flex: none;
+
+  &__localName {
+    background-color: $color-yellow;
+  }
+
+  &__id {
+    background-color: $color-green;
+  }
+
+  &__class {
+    background-color: $color-blue;
+  }
+
+  &__disabled {
+    opacity: 0.25;
+  }
+}

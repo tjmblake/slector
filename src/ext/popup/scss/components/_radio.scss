@@ -1,0 +1,21 @@
+.radio {
+  position: relative;
+  text-transform: uppercase;
+  color: white;
+  font-size: 1.2rem;
+  border-radius: $radio-radius;
+  padding: $radio-padding;
+
+  &::before {
+    content: '';
+    height: 1.2rem;
+    width: 1.2rem;
+
+    border: 1px solid $color-white;
+    background-color: $color-red;
+
+    border-radius: 1.2rem;
+
+    margin-right: $radio-gap;
+  }
+}

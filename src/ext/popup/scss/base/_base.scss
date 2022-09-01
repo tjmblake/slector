@@ -1,5 +1,12 @@
+html {
+  box-sizing: border-box;
+  font-size: 66.67%;
+}
+
 body {
-  width: 500px;
+  width: 400px;
+
+  font-family: 'Roboto', sans-serif;
 }
 
 .deselected {

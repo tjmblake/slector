@@ -1,0 +1,33 @@
+$color-black: #000000;
+$color-white: #ffffff;
+$color-red: #ff595e;
+$color-yellow: #ffd166;
+$color-green: #06d6a0;
+$color-blue: #118ab2;
+
+$btn-radius: 0.7rem;
+$btn-padding: 0.8rem 1rem;
+$btn-background: $color-red;
+
+$radio-radius: 2.5rem;
+$radio-gap: 0.6rem;
+$radio-padding: 0.8rem 1rem;
+
+$nav-padding: 0 2rem;
+$nav-gap: 1.5rem;
+
+$separator-border: 0.5px solid rgba($color-black, 0.25);
+
+$shadow-normal: 0px 0.2rem 0.3rem rgba($color-black, 0.35);
+$shadow-hover: 0px 0.2rem 0.3rem rgba($color-black, 0.4);
+$shadow-active: 0px 0.2rem 0.2rem rgba($color-black, 0.45);
+
+$query-localName-background: $color-yellow;
+$query-id-background: $color-green;
+$query-class-background: $color-blue;
+
+$content-padding: 0 1.5rem;
+$content-gap: 0.8rem;
+
+$slector-padding: 1rem 0;
+$slector-gap: 1.5rem;

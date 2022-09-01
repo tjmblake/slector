@@ -1,3 +1,5 @@
+![Slector Banner](./brand/slector-banner.png)
+
 # Slector
 
 ## Preparing Queries for Web-Scraping

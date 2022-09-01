@@ -20,12 +20,11 @@ class Popup {
 
     this.activeKey = null;
 
-    this.selectionTypeMenu = document.querySelector('#selector-dropdown');
+    this.selectionTypeMenu = document.querySelector('#nav__types');
     this.selectBtn = document.querySelector('#select');
     this.doneBtn = document.querySelector('#done');
     this.slectorsMenu = document.querySelector('#slectorsMenu');
-
-    this.editMenu = document.querySelector('#prune');
+    this.editMenu = document.querySelector('#edit-slector');
 
     // Adding Listeners
     this.selectBtn?.addEventListener('click', Message.sendSelectMessage);
@@ -48,7 +47,10 @@ class Popup {
   }
 
   async deleteBtnHandler(e: Event) {
-    const target = e.target as HTMLElement;
+    let target = e.target as HTMLElement;
+
+    if (target.classList.contains('btn__icon') && target.parentElement) target = target.parentElement;
+
     const selectionKey = target.parentElement?.dataset.selectionKey;
     if (selectionKey) await Message.sendDeleteSelectorMessage(selectionKey);
     this.refresh();
@@ -78,8 +80,8 @@ class Popup {
   }
 
   addSelectorListeners() {
-    const deleteBtns = document.querySelectorAll('.deleteSelector') as unknown as HTMLButtonElement[];
-    const editBtns = document.querySelectorAll('.editSelector') as unknown as HTMLButtonElement[];
+    const deleteBtns = document.querySelectorAll('.slector__delete') as unknown as HTMLButtonElement[];
+    const editBtns = document.querySelectorAll('.slector__edit') as unknown as HTMLButtonElement[];
 
     deleteBtns.forEach((btn) => {
       btn.addEventListener('click', this.deleteBtnHandler.bind(this));
@@ -91,7 +93,10 @@ class Popup {
   }
 
   setActiveKey(e: Event) {
-    const target = e.target as HTMLElement;
+    let target = e.target as HTMLElement;
+
+    if (target.classList.contains('btn__icon') && target.parentElement) target = target.parentElement;
+
     const key = target.parentElement?.dataset.selectionKey;
     this.activeKey = Number(key);
     this.refresh();
@@ -107,7 +112,7 @@ class Popup {
   }
 
   addEditListeners() {
-    const tdata = document.querySelectorAll('td') as unknown as HTMLElement[];
+    const tdata = document.querySelectorAll('.cell') as unknown as HTMLElement[];
 
     tdata.forEach((el) => el.addEventListener('click', this.handleEditClick.bind(this)));
   }
@@ -116,6 +121,7 @@ class Popup {
     const target = e.target as HTMLElement;
     const key = target.dataset.key;
     const layer = target.dataset.layer;
+
     // Send signal flipping 'active'
     await chrome.runtime.sendMessage({ head: 'editSelector', body: [this.activeKey, layer, key] });
     this.refresh();

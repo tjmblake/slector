@@ -1,0 +1,110 @@
+.nav {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 2rem 1fr 2rem;
+  grid-template-rows: 7rem max-content;
+
+  justify-content: flex-start;
+  align-items: center;
+
+  column-gap: $nav-gap;
+
+  background-color: $color-red;
+
+  box-shadow: $shadow-normal;
+  padding: $nav-padding;
+  margin-bottom: 1rem;
+
+  overflow: hidden;
+
+  &__menu {
+    position: relative;
+    height: 1.6rem;
+    width: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+      cursor: pointer;
+    }
+
+    &-icon {
+      position: relative;
+
+      &,
+      &::before,
+      &::after {
+        content: '';
+        width: 2rem;
+        height: 0.2rem;
+        background-color: $color-white;
+      }
+
+      &::before,
+      &::after {
+        position: absolute;
+        transition: all 0.5s;
+        transform: rotate(0);
+      }
+
+      &::before {
+        top: -0.5rem;
+      }
+
+      &::after {
+        top: 0.55rem;
+      }
+    }
+  }
+
+  &__check {
+    display: none;
+  }
+
+  &__check:checked + &__menu &__menu-icon {
+    & {
+      background-color: transparent;
+    }
+    &::before {
+      transform: rotate(45deg);
+      top: 0rem;
+    }
+    &::after {
+      transform: rotate(-45deg);
+      top: 0rem;
+    }
+  }
+
+  &__types {
+    display: none;
+    grid-column: 1 / -1;
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+
+    color: $color-white;
+  }
+
+  &__check:checked ~ &__types {
+    display: flex;
+    padding: 2rem 0px;
+  }
+
+  &__active {
+    margin-right: auto;
+    color: $color-white;
+    font-size: 2rem;
+  }
+
+  &__exit {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  &__slector-type {
+    font-size: 1.6rem;
+  }
+}
