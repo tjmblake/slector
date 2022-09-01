@@ -1,7 +1,6 @@
 export const createQuery = (slector: Slector) => {
   const query = slector.data
     .map((layer) => {
-      console.log(layer);
       let markup = '';
 
       const localName = layer.content.filter((data) => data.type == 'localName' && data.active)[0];

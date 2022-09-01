@@ -1,0 +1,31 @@
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: $btn-padding;
+
+  background-color: $btn-background;
+  border-radius: $btn-radius;
+  border: none;
+
+  box-shadow: $shadow-normal;
+
+  transition: all 0.2s;
+
+  &:hover {
+    box-shadow: $shadow-hover;
+    transform: translateY(-0.15rem);
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(-0.05rem);
+    box-shadow: $shadow-active;
+  }
+
+  &__icon {
+    height: 2rem;
+    width: 2rem;
+  }
+}

@@ -1,0 +1,21 @@
+.slector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: $slector-gap;
+  padding: $slector-padding;
+
+  border-bottom: $separator-border;
+
+  &__name {
+    flex-grow: 1;
+    font-size: 1.6rem;
+  }
+
+  &__edit {
+  }
+
+  &__delete {
+  }
+}

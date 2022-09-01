@@ -1,0 +1,17 @@
+.edit-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  padding: 1rem 0;
+
+  overflow: scroll;
+  gap: 1.5rem;
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+}

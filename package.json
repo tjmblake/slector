@@ -4,12 +4,15 @@
   "description": "This can be used to select html & css targets and save as a config for use in crawling projects. This is not a crawler.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "npm-run-all copyfiles build:tsc",
+    "build": "npm-run-all build:sass copyfiles build:tsc",
+    "rebuild": "npm-run-all clear build:sass copyfiles build:tsc",
     "build:tsc": "tsc",
     "watch": "tsc --watch",
-    "copyfiles": "copyfiles --up 1 src/ext/*.json src/ext/popup/*.html src/ext/popup/*.css src/ext/img/*.png lib",
+    "build:sass": "sass src/ext/popup/scss/main.scss src/ext/popup/index.css",
+    "copyfiles": "copyfiles --up 1 src/ext/*.json src/ext/popup/*.html src/ext/popup/*.css src/ext/img/*.png src/ext/popup/icons/*.svg lib",
     "semantic-release": "semantic-release --branches master",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "clear": "rm -rf ./lib"
   },
   "type": "module",
   "author": "Thomas Blake",
@@ -30,6 +33,7 @@
     "eslint": "^8.18.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
+    "sass": "^1.54.5",
     "semantic-release": "^19.0.3",
     "typescript": "^4.7.4"
   },

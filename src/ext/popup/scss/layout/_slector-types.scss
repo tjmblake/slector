@@ -1,0 +1,21 @@
+.slector-types {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  gap: 1.5rem;
+
+  padding: 0.5rem 0;
+
+  input {
+    appearance: none;
+    display: none;
+  }
+
+  input:checked + label {
+    &::before {
+      border: 1px solid $color-white;
+      background-color: $color-white;
+    }
+  }
+}
