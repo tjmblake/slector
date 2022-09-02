@@ -71,7 +71,7 @@ class Popup {
 
     // Render Selections List of Active Selection Type
     if (this.slectorsMenu)
-      this.slectorsMenu.innerHTML = Markup.listSelectors(this.state.slectors, this.state.slectorType);
+      this.slectorsMenu.innerHTML = Markup.listSelectors(this.state.slectors, this.state.slectorType, this.activeKey);
 
     this.addSelectorListeners();
 
@@ -96,6 +96,12 @@ class Popup {
     let target = e.target as HTMLElement;
 
     if (target.classList.contains('btn__icon') && target.parentElement) target = target.parentElement;
+
+    if (target.parentElement?.classList.contains('slector-active')) {
+      this.activeKey = null;
+      this.refresh();
+      return;
+    }
 
     const key = target.parentElement?.dataset.selectionKey;
     this.activeKey = Number(key);
