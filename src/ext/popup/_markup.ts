@@ -24,13 +24,18 @@ export const selectionTypes = (selectionTypes: string[], selectionType: string) 
  * @param selectionType
  * @returns
  */
-export const listSelectors = (slectors: Slector[], selectionType: string) => {
+export const listSelectors = (slectors: Slector[], selectionType: string, activeKey: number | null) => {
   const markup = slectors
     .filter((slector) => slector.type === selectionType)
     .map((slector) => {
       const value = slector.data[0].content.find((el) => el.type === 'localName')?.value;
-      return `<div class='slector' data-selection-key='${slector.key}'>
-      <button class='slector__edit btn'><img class="btn__icon"  src="./icons/tune.svg"></button>
+
+      const slectorIsActive = slector.key === activeKey;
+
+      const tuneImage = `<img class="btn__icon"  src="./icons/${!slectorIsActive ? 'tune.svg' : 'cancel.svg'}">`;
+
+      return `<div class='slector ${slectorIsActive ? 'slector-active' : ''}' data-selection-key='${slector.key}'>
+      <button class='slector__edit btn'>${tuneImage}</button>
       <span class="slector__name">${value}</span>
       <button class='slector__delete btn'><img class="btn__icon" src="./icons/bin.svg"></button></div>`;
     })
