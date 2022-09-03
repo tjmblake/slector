@@ -23,8 +23,8 @@ class Background {
     });
   }
 
-  async handleRequest(request: { head: string; body: string | [] }) {
-    if (request.head === 'init') {
+  async handleRequest(request: AllMessages) {
+    if (request.head === 'INIT') {
       if (this.state.slectorTypes.length === 0) {
         const res = await Injector.getLocalStorage();
 
@@ -43,20 +43,20 @@ class Background {
       return { head: 'init', data: 'Init' };
     }
 
-    if (request.head === 'done') {
+    if (request.head === 'DONE') {
       await Injector.setLocalStorage(this.state);
     }
 
     // Req from popup to inject select script
-    if (request.head === 'select') {
+    if (request.head === 'SELECT') {
       await Injector.injectSelectScript();
       return { head: 'select', data: 'Injected!' };
     }
 
     // Message from CS with selection data to store
-    if (request.head === 'newSelection') {
+    if (request.head === 'NEW_SLECTOR') {
       if (typeof request.body === 'object') {
-        const slector = {
+        const slector: Slector = {
           key: this.activeSlectorKey,
           type: this.state.slectorType,
           data: request.body,
@@ -73,16 +73,17 @@ class Background {
       return { head: 'newSelection', body: this.state };
     }
 
-    if (request.head === 'deleteSelector') {
+    if (request.head === 'DELETE_SLECTOR') {
       this.state.slectors = this.state.slectors.filter((slector) => slector.key != Number(request.body));
       await Injector.injectHighlightScript(this.state);
 
       return { head: 'deletedSelector', body: this.state };
     }
 
-    if (request.head === 'editSelector') {
+    if (request.head === 'EDIT_SLECTOR') {
       // Find Correct Value
-      const [slectorKey, layer, key] = request.body as number[];
+      const editSlectorBody: EditSlectorBody = request.body;
+      const [slectorKey, layer, key] = editSlectorBody;
 
       const slectorIndex = this.state.slectors.findIndex((el) => el.key === slectorKey);
 
@@ -99,12 +100,13 @@ class Background {
     }
 
     // Message from Popup to set current selection type from dropdown.
-    if (request.head === 'setSlectorType' && typeof request.body === 'string') {
-      this.state.slectorType = request.body;
+    if (request.head === 'SET_SLECTOR_TYPE') {
+      const body = request.body;
+      this.state.slectorType = body;
       return { head: 'setSlectorType', body: this.state };
     }
 
-    if (request.head === 'getState') {
+    if (request.head === 'GET_STATE') {
       return { head: 'getState', body: this.state };
     }
 

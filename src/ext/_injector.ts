@@ -18,11 +18,9 @@ export const injectHighlightScript = async (state: State) => {
       files: ['./content/highlight.js'],
     });
 
+    const message: HighlightMessage = { head: 'HIGHLIGHT', body: state };
     // Follow on the data
-    await chrome.tabs.sendMessage(tab.id, {
-      head: 'highlight',
-      body: state,
-    });
+    await chrome.tabs.sendMessage(tab.id, message);
   }
 };
 
@@ -35,9 +33,10 @@ export const getLocalStorage = async () => {
       files: ['./content/getLocalStorage.js'],
     });
 
-    const res = (await chrome.tabs.sendMessage(tab.id, {
-      head: 'getLocalStorage',
-    })) as unknown as { head: string; body: string[] };
+    const message: GetLocalStorageMessage = {
+      head: 'GET_LOCAL_STORAGE',
+    };
+    const res = (await chrome.tabs.sendMessage(tab.id, message)) as unknown as LocalStorageDataMessage;
 
     return res;
   }
@@ -52,10 +51,12 @@ export const setLocalStorage = async (state: State) => {
       files: ['./content/setLocalStorage.js'],
     });
 
-    const res = (await chrome.tabs.sendMessage(tab.id, {
-      head: 'setLocalStorage',
+    const message: SetLocalStorageMessage = {
+      head: 'SET_LOCAL_STORAGE',
       body: JSON.stringify(state),
-    })) as unknown as { head: string; body: string[] };
+    };
+
+    const res = (await chrome.tabs.sendMessage(tab.id, message)) as unknown as { head: string; body: string[] };
 
     return res;
   }

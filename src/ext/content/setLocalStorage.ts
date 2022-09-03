@@ -1,10 +1,10 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: AllMessages, sender, sendResponse) => {
   console.log(message);
 
-  if (message.head === 'setLocalStorage') {
+  if (message.head === 'SET_LOCAL_STORAGE') {
     localStorage.setItem('done', message.body);
 
-    sendResponse({ head: 'set' });
+    sendResponse({ head: 'SET_LOCAL_STORAGE_CONFIRMATION' });
 
     return true;
   }

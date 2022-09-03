@@ -56,7 +56,8 @@ function init() {
     }
 
     async sendSelection(assembledSelection: pathLayer[]) {
-      const res = await chrome.runtime.sendMessage({ head: 'newSelection', body: assembledSelection });
+      const message: NewSlectorMessage = { head: 'NEW_SLECTOR', body: assembledSelection };
+      const res = await chrome.runtime.sendMessage(message);
       console.log(res);
       document.removeEventListener('click', this.boundSelect);
     }
