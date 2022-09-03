@@ -1,7 +1,7 @@
 chrome.runtime.onMessage.addListener(handleMessage);
 
-function handleMessage(message: { head: string; body: State }) {
-  if (message.head !== 'highlight') return;
+function handleMessage(message: AllMessages) {
+  if (message.head !== 'HIGHLIGHT') return;
   // STYLE STRING
   const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
   const classNames = message.body.slectorTypes.map((el, i) => `slector__${i}`);

@@ -1,7 +1,7 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: AllMessages, sender, sendResponse) => {
   console.log(message);
 
-  if (message.head === 'getLocalStorage') {
+  if (message.head === 'GET_LOCAL_STORAGE') {
     const collectionTypes = localStorage.getItem('collectionTypes');
     const slectors = localStorage.getItem('slectors');
 
@@ -12,7 +12,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       console.log('COLLECTED FROM LOCAL STORAGE:');
       console.log(body);
 
-      sendResponse({ head: 'localStorage', body: body });
+      const message: LocalStorageDataMessage = { head: 'LOCAL_STORAGE_DATA', body: body };
+      sendResponse(message);
     }
 
     return true;

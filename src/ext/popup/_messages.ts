@@ -1,25 +1,24 @@
 export const sendSelectMessage = async () => {
-  const res = await chrome.runtime.sendMessage({ head: 'select' });
-  console.log('Select Script Launched');
-  console.log(res);
+  const message: SelectMessage = { head: 'SELECT' };
+  await chrome.runtime.sendMessage(message);
 };
 
 export const sendInitMessage = async () => {
-  const res = await chrome.runtime.sendMessage({ head: 'init' });
-  console.log('Init Response Recieved:');
-  console.log(res);
+  const message: InitMessage = { head: 'INIT' };
+  await chrome.runtime.sendMessage(message);
 };
 
-export const sendSelectionTypeMessage = async (value: string) => {
-  console.log(value);
-  const res = await chrome.runtime.sendMessage({ head: 'setSlectorType', body: value });
-  console.log(res);
+export const sendSetSelectionType = async (value: string) => {
+  const message: SetSlectorTypeMessage = { head: 'SET_SLECTOR_TYPE', body: value };
+  await chrome.runtime.sendMessage(message);
 };
 
 export const sendDeleteSelectorMessage = async (selectionKey: string) => {
-  await chrome.runtime.sendMessage({ head: 'deleteSelector', body: selectionKey });
+  const message: DeleteSlectorMessage = { head: 'DELETE_SLECTOR', body: selectionKey };
+  await chrome.runtime.sendMessage(message);
 };
 
 export const sendDoneMessage = async () => {
-  await chrome.runtime.sendMessage({ head: 'done' });
+  const message: DoneMessage = { head: 'DONE' };
+  await chrome.runtime.sendMessage(message);
 };

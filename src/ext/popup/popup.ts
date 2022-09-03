@@ -41,7 +41,7 @@ class Popup {
 
   async changeSelectionTypeHandler(e: Event) {
     const value = (e.target as HTMLInputElement).value;
-    await Message.sendSelectionTypeMessage(value);
+    await Message.sendSetSelectionType(value);
     this.activeKey = null;
     this.refresh();
   }
@@ -57,7 +57,8 @@ class Popup {
   }
 
   async getState() {
-    const res = await chrome.runtime.sendMessage({ head: 'getState' });
+    const message: GetStateMessage = { head: 'GET_STATE' };
+    const res = await chrome.runtime.sendMessage(message);
     this.state = res.body;
   }
 
@@ -125,11 +126,21 @@ class Popup {
 
   async handleEditClick(e: Event) {
     const target = e.target as HTMLElement;
-    const key = target.dataset.key;
-    const layer = target.dataset.layer;
+    const key = Number(target.dataset.key);
+    const layer = Number(target.dataset.layer);
 
+    if (this.activeKey == null || layer == null || key == null) {
+      throw new Error(`
+      Popup: handleEditClick \n
+      Cannot handle edit click. \n
+      this.activeKey: ${this.activeKey} \n
+      key: ${key} \n 
+      layer: ${layer} \n`);
+    }
+
+    const message: EditSlectorMessage = { head: 'EDIT_SLECTOR', body: [this.activeKey, layer, key] };
     // Send signal flipping 'active'
-    await chrome.runtime.sendMessage({ head: 'editSelector', body: [this.activeKey, layer, key] });
+    await chrome.runtime.sendMessage(message);
     this.refresh();
   }
 }
