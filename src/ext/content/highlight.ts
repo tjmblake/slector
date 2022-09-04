@@ -26,12 +26,17 @@ function handleMessage(message: AllMessages) {
   previouslySelected.forEach((el) => el.classList.remove('slector', ...classNames));
   // Find new elements in query.
   message.body.slectors.forEach((slector) => {
+    const textContent: string[] = [];
     // Select Slector
     const slected = document.querySelectorAll(slector.query);
-    // Apply Classes
-    slected.forEach((el) =>
-      el.classList.add('slector', classNames[message.body.slectorTypes.findIndex((val) => val === slector.type)]),
-    );
+    // Apply Classes and send text content back to state
+    slected.forEach((el) => {
+      el.classList.add('slector', classNames[message.body.slectorTypes.findIndex((val) => val === slector.type)]);
+      if (el.textContent) textContent.push(el.textContent);
+    });
+
+    const sendData: TextContentMessage = { head: 'TEXT_CONTENT', body: { textContent: textContent, slector } };
+    chrome.runtime.sendMessage(sendData);
   });
 
   chrome.runtime.onMessage.removeListener(handleMessage);

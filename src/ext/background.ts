@@ -110,6 +110,12 @@ class Background {
       return { head: 'getState', body: this.state };
     }
 
+    if (request.head === 'TEXT_CONTENT') {
+      const slector = this.state.slectors.find((slector) => slector.key === request.body.slector.key);
+      if (slector) slector.textContent = request.body.textContent;
+      return { head: 'stored' };
+    }
+
     return { head: 'error', body: 'Request not handled' };
   }
 }

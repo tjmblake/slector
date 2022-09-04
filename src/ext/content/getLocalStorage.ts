@@ -3,11 +3,13 @@ chrome.runtime.onMessage.addListener((message: AllMessages, sender, sendResponse
 
   if (message.head === 'GET_LOCAL_STORAGE') {
     const collectionTypes = localStorage.getItem('collectionTypes');
+    const exportTextContent = localStorage.getItem('exportTextContent');
     const slectors = localStorage.getItem('slectors');
 
     if (collectionTypes) {
       const body: localStorageBody = { collectionTypes: JSON.parse(collectionTypes) };
       if (slectors) body.slectors = JSON.parse(slectors);
+      if (exportTextContent) body.exportTextContent = JSON.parse(exportTextContent);
 
       console.log('COLLECTED FROM LOCAL STORAGE:');
       console.log(body);

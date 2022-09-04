@@ -97,6 +97,13 @@ export default class BrowserInstance {
 
       console.log('Slectors: Stored!');
     }
+
+    if (this.options.exportTextContent) {
+      await this.extPage?.evaluate((data) => {
+        localStorage.setItem('exportTextContent', JSON.stringify(data));
+      }, this.options.exportTextContent);
+      console.log('Export Text Content: Stored!');
+    }
   }
 
   async collectData() {
