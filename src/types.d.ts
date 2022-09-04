@@ -5,6 +5,7 @@ declare interface Slector {
   key: number;
   /** Most recent query, created pre-injection refresh */
   query: string;
+  textContent?: string[];
 }
 
 declare interface State {
@@ -43,10 +44,13 @@ declare interface options {
   startUrl: string;
   /** Previous Slector Data */
   slectors?: Slector[];
+  /** Pull the text content of each valid slector element into output [] */
+  exportTextContent?: boolean;
 }
 
 /** Message body sent from 'getLocalStorage' to 'background' */
 declare interface localStorageBody {
   collectionTypes: string[];
   slectors?: Slector[];
+  exportTextContent?: boolean;
 }

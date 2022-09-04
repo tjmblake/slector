@@ -10,7 +10,8 @@ declare type AllMessages =
   | SetLocalStorageMessage
   | LocalStorageDataMessage
   | NewSlectorMessage
-  | HighlightMessage;
+  | HighlightMessage
+  | TextContentMessage;
 
 declare type SelectMessage = { head: 'SELECT' };
 declare type InitMessage = { head: 'INIT' };
@@ -32,4 +33,5 @@ declare type LocalStorageDataMessage = { head: 'LOCAL_STORAGE_DATA'; body: local
 declare type SetLocalStorageMessage = { head: 'SET_LOCAL_STORAGE'; body: string };
 
 declare type HighlightMessage = { head: 'HIGHLIGHT'; body: State };
+declare type TextContentMessage = { head: 'TEXT_CONTENT'; body: { textContent: string[]; slector: Slector } };
 declare type DoneMessage = { head: 'DONE' };
