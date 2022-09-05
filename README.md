@@ -10,24 +10,34 @@ This package is used to create **'Slectors'** _(otherwise known as DOM Queries)_
 
 Initialise a Node Project.
 
-Install Slector:
+### Install Slector:
 
 `npm install slector -D`
 
-Import Slector:
+### Import Slector:
 
 `import Slector from "slector"; `
 
-Create a Slector options object:
+### Create a Slector options object:
 
-`const options = {collectionTypes: ["test", "test2"] }`
+`const options = {showExtConsole: true, collectionTypes: ["EndPoint", "Method Description"], startUrl: "https://www.coingecko.com/en/api/documentation", slectors: previousSlectors, exportTextContent: true,}`
 
-_'collectionTypes' defines the categories you want to be able to link your selections/Slectors to._
+### Slector Options Available
 
-Create a new Slector:
+| Property          | Definition                                                            | Required? |
+| ----------------- | --------------------------------------------------------------------- | --------- |
+| collectionTypes   | _string[]_: The available Slector names/categories/groups.            | ✅        |
+| startUrl          | _string_: The first url to navigate to (_after extension setup_)      | ✅        |
+| slectors          | _slectors[]_: Previously exported slector data to load on setup.      | ❌        |
+| exportTextContent | _boolean_: Will collect text content of all highlighted DOM elements. | ❌        |
+| showExtConsole    | _boolean_: Will open background-script inspector on startup.          | ❌        |
+
+### Create a new Slector Instance:
 
 `const slector = new Slector(options);`
 
-Open the browser, make your selections, and when you click 'DONE' in the extension - return all your Slector data.
+### Run Slector and export data:
 
 `const res = await slector.slect();`
+
+Open the browser, make your selections, and when you click 'DONE' in the extension - return all your Slector Instance JSON data.
