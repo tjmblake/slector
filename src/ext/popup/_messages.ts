@@ -3,11 +3,6 @@ export const sendSelectMessage = async () => {
   await chrome.runtime.sendMessage(message);
 };
 
-export const sendInitMessage = async () => {
-  const message: InitMessage = { head: 'INIT' };
-  await chrome.runtime.sendMessage(message);
-};
-
 export const sendSetSelectionType = async (value: string) => {
   const message: SetSlectorTypeMessage = { head: 'SET_SLECTOR_TYPE', body: value };
   await chrome.runtime.sendMessage(message);

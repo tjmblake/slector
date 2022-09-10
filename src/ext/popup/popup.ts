@@ -1,5 +1,6 @@
 import * as Message from './_messages.js';
 import * as Markup from './_markup.js';
+import * as Listen from './_listen.js';
 
 class Popup {
   state: State;
@@ -31,11 +32,6 @@ class Popup {
     this.selectionTypeMenu?.addEventListener('change', this.changeSelectionTypeHandler.bind(this));
     this.doneBtn?.addEventListener('click', Message.sendDoneMessage);
 
-    this.init();
-  }
-
-  async init() {
-    await Message.sendInitMessage();
     this.refresh();
   }
 
@@ -74,23 +70,11 @@ class Popup {
     if (this.slectorsMenu)
       this.slectorsMenu.innerHTML = Markup.listSelectors(this.state.slectors, this.state.slectorType, this.activeKey);
 
-    this.addSelectorListeners();
+    Listen.all('.slector__delete', this.deleteBtnHandler.bind(this));
+    Listen.all('.slector__edit', this.setActiveKey.bind(this));
 
     this.renderEditMenu();
-    this.addEditListeners();
-  }
-
-  addSelectorListeners() {
-    const deleteBtns = document.querySelectorAll('.slector__delete') as unknown as HTMLButtonElement[];
-    const editBtns = document.querySelectorAll('.slector__edit') as unknown as HTMLButtonElement[];
-
-    deleteBtns.forEach((btn) => {
-      btn.addEventListener('click', this.deleteBtnHandler.bind(this));
-    });
-
-    editBtns.forEach((btn) => {
-      btn.addEventListener('click', this.setActiveKey.bind(this));
-    });
+    Listen.all('.cell', this.handleEditClick.bind(this));
   }
 
   setActiveKey(e: Event) {
@@ -111,17 +95,9 @@ class Popup {
 
   renderEditMenu() {
     const activeEdit = this.state.slectors.find((el) => el.key === this.activeKey);
-
     if (!this.editMenu) return;
-
     if (activeEdit) this.editMenu.innerHTML = Markup.editTableMarkup(activeEdit);
     else this.editMenu.innerHTML = '';
-  }
-
-  addEditListeners() {
-    const tdata = document.querySelectorAll('.cell') as unknown as HTMLElement[];
-
-    tdata.forEach((el) => el.addEventListener('click', this.handleEditClick.bind(this)));
   }
 
   async handleEditClick(e: Event) {
