@@ -2,7 +2,6 @@ declare type AllMessages =
   | SetSlectorTypeMessage
   | EditSlectorMessage
   | DeleteSlectorMessage
-  | InitMessage
   | DoneMessage
   | SelectMessage
   | GetStateMessage
@@ -14,7 +13,6 @@ declare type AllMessages =
   | TextContentMessage;
 
 declare type SelectMessage = { head: 'SELECT' };
-declare type InitMessage = { head: 'INIT' };
 declare type GetStateMessage = { head: 'GET_STATE' };
 
 declare type EditSlectorMessage = { head: 'EDIT_SLECTOR'; body: EditSlectorBody };
