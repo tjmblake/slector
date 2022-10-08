@@ -24,7 +24,7 @@ class Background {
   }
 
   async handleRequest(request: AllMessages) {
-    if (request.head === 'INIT') {
+    if (request.head === 'GET_STATE') {
       if (this.state.slectorTypes.length === 0) {
         const res = await Injector.getLocalStorage();
 
@@ -40,7 +40,7 @@ class Background {
           this.state.slectorType = this.state.slectorTypes[0];
         }
       }
-      return { head: 'init', data: 'Init' };
+      return { head: 'getState', body: this.state };
     }
 
     if (request.head === 'DONE') {
@@ -104,10 +104,6 @@ class Background {
       const body = request.body;
       this.state.slectorType = body;
       return { head: 'setSlectorType', body: this.state };
-    }
-
-    if (request.head === 'GET_STATE') {
-      return { head: 'getState', body: this.state };
     }
 
     if (request.head === 'TEXT_CONTENT') {
