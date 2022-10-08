@@ -9,6 +9,7 @@ class Popup {
   selectionTypeMenu: HTMLElement | null;
   selectBtn: HTMLButtonElement | null;
   slectorsMenu: HTMLButtonElement | null;
+  slectorType: HTMLElement | null;
   editMenu: HTMLElement | null;
   doneBtn: HTMLButtonElement | null;
 
@@ -25,6 +26,7 @@ class Popup {
     this.selectBtn = document.querySelector('#select');
     this.doneBtn = document.querySelector('#done');
     this.slectorsMenu = document.querySelector('#slectorsMenu');
+    this.slectorType = document.querySelector('#slector-type');
     this.editMenu = document.querySelector('#edit-slector');
 
     // Adding Listeners
@@ -69,6 +71,8 @@ class Popup {
     // Render Selections List of Active Selection Type
     if (this.slectorsMenu)
       this.slectorsMenu.innerHTML = Markup.listSelectors(this.state.slectors, this.state.slectorType, this.activeKey);
+
+    if (this.slectorType) this.slectorType.innerText = this.state.slectorType;
 
     Listen.all('.slector__delete', this.deleteBtnHandler.bind(this));
     Listen.all('.slector__edit', this.setActiveKey.bind(this));
